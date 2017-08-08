@@ -30,7 +30,7 @@ const expressions = {
   'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
-  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{0-8}$`)
+  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
 };
 const messages = {
   hello: (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
@@ -61,6 +61,9 @@ const messages = {
   livestream: (message, id) => {
     const arr = message.split(' ');
     
+    if (parseFloat(arr[2]) === 0)
+      return 'Invalid value';
+    
     Users.insert({
       user_id: id,
       last_text: message,
@@ -71,6 +74,7 @@ const messages = {
         console.log(error);
         return 'Error while starting the stream. Try another time please.';
       }
+      
       
       if (currenciesRate[arr[0]] === {} || !currenciesRate[arr[0]])
         return `Couldn't retrieve currency. Try later`;
