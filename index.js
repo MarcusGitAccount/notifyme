@@ -71,7 +71,7 @@ app.post('/webhook', (request, response) => {
         else {
           console.log('Uhm, you were supposed to send me a message ):');
         }
-      });;
+      });
     });
   }
 });
