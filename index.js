@@ -18,7 +18,7 @@ app.get('/', (request, response) => {
   response.status(200).send('index');
 });
 
-app.get('/', (request, response) => {
+app.get('/webhook', (request, response) => {
   response.status(200).send('web hook');
 });
 
