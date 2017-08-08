@@ -26,7 +26,7 @@ app.get('/webhook/', (request, response) => {
   const query = url.parse(request.url, true).query;
   
   if (query['hub.verify_token'] === VERIFY_TOKEN)
-    request.status(200).send(query['hub.challenge']);
+    response.status(200).send(query['hub.challenge']);
   response.status(403).send('Forbidden');          
 });
 
