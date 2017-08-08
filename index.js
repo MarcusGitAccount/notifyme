@@ -22,6 +22,8 @@ function processMessage(event) {
 }
 
 function sendMessage(id, text) {
+  console.log(id, text);
+  
   callSendApi({
     recipient: { id },
     message: { text }
@@ -63,6 +65,7 @@ app.get('/webhook', (request, response) => {
 // receive message
 app.post('/webhook', (request, response) => {
   if (request.body.object === 'page') {
+    console.log(request.body.entry)
     request.body.entry.forEach((entry) => {
       entry.messaging.forEach((event) => {
         if (event.message) {
@@ -74,6 +77,8 @@ app.post('/webhook', (request, response) => {
       });
     });
   }
+  
+  response.sendStatus(200);
 });
 
 app.get('*', (request, response) => {
