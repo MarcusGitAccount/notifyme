@@ -8,7 +8,7 @@ const _db = Symbol('_db');
 class MongoConnection {
   constructor() {
     console.log('Connected to mongodb.');
-    mongoose.connectUri('mongodb://marcuspop:dbconnection_pass~eurobtc2017@ds039271.mlab.com:39271/notifymedb', {
+    mongoose.connect('mongodb://marcuspop:dbconnection_pass~eurobtc2017@ds039271.mlab.com:39271/notifymedb', {
       useMongoClient: true
     })
       .then(db => this[_db] = db)
