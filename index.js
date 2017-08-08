@@ -29,7 +29,7 @@ const expressions = {
   'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
   'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
   'stop': new RegExp(/^stop|end|terminate$/),
-  'site': new RegExp(/^poloniex$/)
+  'site': new RegExp(/^site/)
 };
 const messages = {
   'hello': (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
@@ -71,7 +71,7 @@ const messages = {
         return 'Error while starting the stream. Try another time please.';
       }
       
-      if (currenciesRate[message] === {} || !currenciesRate[message])
+      if (currenciesRate[arr[0]] === {} || !currenciesRate[arr[0]])
         return `Couldn't retrieve currency. Try later`;
       
       if (parseFloat(arr[3]) === currenciesRate[arr[0]].last)
