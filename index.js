@@ -63,7 +63,7 @@ const messages = {
     Users.insert({
       user_id: id,
       last_text: message,
-      last_livestream_value: parseFloat(arr[3]),
+      last_livestream_value: parseFloat(arr[2]),
       currency: arr[0]
     }, (error, result) => {
       if (error) {
@@ -74,7 +74,7 @@ const messages = {
       if (currenciesRate[arr[0]] === {} || !currenciesRate[arr[0]])
         return `Couldn't retrieve currency. Try later`;
       
-      if (parseFloat(arr[3]) === currenciesRate[arr[0]].last)
+      if (parseFloat(arr[2]) === currenciesRate[arr[0]].last)
         return `Starting stream... ${arr[0]} reached your desired value.`;
       
       return 'Starting stream...';
