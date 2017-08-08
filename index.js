@@ -18,9 +18,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const req = require('request');
 
-const app = express();
+const UsersModel = require('./Users');
 
-const Users = require('./Users');
+const app = express();
+const Users = new UsersModel();
+
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
