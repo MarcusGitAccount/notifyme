@@ -28,9 +28,9 @@ app.use(bodyParser.urlencoded({ 'extended': true}));
 app.use(bodyParser.json());
 
 function processMessage(event) {
-  console.log('tryng to get he message')
+  console.log('tryng to get the message')
   
-  sendMessage(event.sender.id, event.message.text);
+  sendMessage(event.sender.id, JSON.stringify(event.message.text, null, 2));
 }
 
 function sendMessage(id, text) {
