@@ -35,7 +35,7 @@ function sendMessage(id, text) {
   
   // logic
   if (text === 'help') {
-    text = messages['help'];
+    text = messages['help']();
   }
   
   callSendApi({
