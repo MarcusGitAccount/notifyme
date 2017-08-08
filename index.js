@@ -5,6 +5,9 @@ const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
 
+const supportedCurrencies = ['SC'];
+const currenciesRate = {};
+
 const fetch = require('node-fetch');
 const url = require('url');
 
@@ -29,8 +32,7 @@ const messages = {
   }
 };
 
-const supportedCurrencies = ['SC'];
-const currenciesRate = {};
+
 
 app.set('port', (process.env.PORT || 5000));
 app.set('case sensitive routing', true);
