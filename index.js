@@ -18,6 +18,8 @@ app.use(bodyParser.urlencoded({ 'extended': true}));
 app.use(bodyParser.json());
 
 function processMessage(event) {
+  console.log('tryng to get he message')
+  
   sendMessage(event.sender.id, event.message);
 }
 
@@ -64,9 +66,11 @@ app.get('/webhook', (request, response) => {
 
 // receive message
 app.post('/webhook', (request, response) => {
+  console.log('posting');
   if (request.body.object === 'page') {
     console.log(request.body.entry)
     request.body.entry.forEach((entry) => {
+      console.log('message ', entry);
       entry.messaging.forEach((event) => {
         if (event.message) {
           processMessage(event);
