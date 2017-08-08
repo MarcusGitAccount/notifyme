@@ -43,6 +43,8 @@ const messages = {
     e) site - source of values`
   },
   currency: (message, id) => {
+    console.log('CURRENCY');
+    
     if (currenciesRate[message] === {} || !currenciesRate[message])
       return `Couldn't retrieve currency. Try later`;
     return `1 ${message} is worth ${currenciesRate[message].last}`;
@@ -59,6 +61,8 @@ const messages = {
     return 'Livestreaming currency has stopped';
   },
   livestream: (message, id) => {
+    console.log('LIVESTREAM');
+    
     const arr = message.split(' ');
     
     if (parseFloat(arr[2]) === 0)
