@@ -16,6 +16,6 @@ app.get('/', (request, response) => {
   response.status(200).send('Hello world');
 });
 
-const listener = app.listen(process.env.PORT, process.env.IP, () => {
+const listener = app.listen(process.env.PORT || 8080, process.env.IP || '127.0.0.1', () => {
   console.log(`Server up and running on http://${listener.address().address}:${listener.address().port}`);
 });
