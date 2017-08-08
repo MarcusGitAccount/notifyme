@@ -20,11 +20,10 @@ app.get('/', (request, response) => {
   response.status(200).send('index');
 });
 
-app.get('/webhook', (request, response) => {
+app.get('/webhook/', (request, response) => {
   if (request.query['hub.verify_token'] === VERIFY_TOKEN)
     request.status(200).send(request.query['hub.challenge']);
-  else
-    response.sendStatus(403);          
+  response.status(403).send('Forbidden');          
 });
 
 app.get('*', (request, response) => {
