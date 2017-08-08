@@ -52,6 +52,7 @@ function callSendApi(data) {
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (request, response) => {
+  console.log('here i lay in pure sadness')
   response.status(200).send('index');
 });
 
