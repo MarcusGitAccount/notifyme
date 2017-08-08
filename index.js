@@ -1,22 +1,16 @@
-'use strict';
+var express = require('express');
+var app = express();
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const morgan = require('morgan');
+app.set('port', (process.env.PORT || 5000));
 
-const app = express();
+app.use(express.static(__dirname + '/public'));
 
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ 'extended': true}));		
-app.use(bodyParser.json());
+// views is directory for all template files
 
-app.set('port', process.env.PORT || 5000);
-app.set('case sensitive routing', true);
-
-app.get('/', (request, response) => {
-  response.status(200).send('Hello world');
+app.get('/', function(request, response) {
+  response.status(200).send('fuck off');
 });
 
-const listener = app.listen(app.get('port'), () => {
-  console.log(`Server up and running on http://${listener.address().address}:${listener.address().port}`);
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });

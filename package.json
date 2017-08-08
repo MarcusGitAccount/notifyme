@@ -1,33 +1,31 @@
 {
-  "name": "notifymechatbot",
-  "version": "1.0.0",
-  "description": "facebook messenger bot for poloniex api",
+  "name": "node-js-getting-started",
+  "version": "0.2.6",
+  "description": "A sample Node.js app using Express 4",
+  "engines": {
+    "node": "6.11.1"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm index.js"
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "ejs": "2.5.6",
+    "express": "4.15.2"
+  },
+  "devDependencies": {
+    "request": "^2.81.0",
+    "tape": "^4.7.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MarcusGitAccount/notifyme.git"
+    "url": "https://github.com/heroku/node-js-getting-started"
   },
   "keywords": [
-    "poliniex",
-    "sc",
-    "btc",
-    "facebook",
-    "messenger"
+    "node",
+    "heroku",
+    "express"
   ],
-  "author": "Marcus Pop",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MarcusGitAccount/notifyme/issues"
-  },
-  "homepage": "https://github.com/MarcusGitAccount/notifyme#readme",
-  "dependencies": {
-    "body-parser": "^1.17.2",
-    "express": "^4.15.4",
-    "morgan": "^1.8.2",
-    "mysql": "^2.14.1"
-  }
+  "license": "MIT"
 }
