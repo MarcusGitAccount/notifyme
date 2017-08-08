@@ -14,7 +14,10 @@ const app = express();
 
 const messages = {
   'help': () => {
-    return `Available commands: a) sc up to <value> b) sc down to <value> c) help`;
+    return `Available commands: 
+            a) sc up to <value> 
+            b) sc down to <value> 
+            c) help`;
   }
 }
 
