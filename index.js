@@ -162,7 +162,7 @@ app.post('/webhook', (request, response) => {
           processMessage(event);
         }
         else {
-          console.log('Uhm, you were supposed to send me a message ):');
+          console.log('Uhm, you were supposed to send me a message ):', JSON.stringify(event, null, 2));
         }
       });
     });
