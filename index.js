@@ -35,9 +35,10 @@ function sendMessage(id, text) {
   
   // logic
   if (text === 'help') {
+    console.log('asking for help')
     text = messages['help']();
   }
-  
+
   callSendApi({
     recipient: { id },
     message: { text }
@@ -51,7 +52,7 @@ function callSendApi(data) {
     method: 'POST',
     json: data
   }, (error, response, body) => {
-    if (!error && response.status === 200) {
+    if (!error) {
       console.log('Succesfully sent message to user');
     }
     else {
