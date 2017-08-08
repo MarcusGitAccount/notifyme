@@ -1,5 +1,8 @@
 'use strict';
 
+// dbconnection_pass~eurobtc2017
+// marcuspop
+
 const UPDATE_TIME = 1 * 60 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
@@ -17,30 +20,63 @@ const req = require('request');
 
 const app = express();
 
+const Users = require('./Users');
+
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
   'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
   'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
-  'stop': new RegExp(/^stop|end|terminate$/)
+  'stop': new RegExp(/^stop|end|terminate$/),
+  'site': new RegExp(/^poloniex$/)
 };
 const messages = {
   'hello': (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
   'help': (message, id) => {
     return `Available commands: 
-    a) sc to <value> to get notifications when Siacon reaches <value>
-    b) ${supportedCurrencies.join('; ')} to get the currency value in BTC
+    a) sc to <value> to get notifications when Siacon reaches <value>. 1 minute stream.
+    b) ${supportedCurrencies.join('; ')} to get the currency value in BTC.
     c) help
-    d) stop/end/terminate to end currency livestream`
+    d) stop/end/terminate to end currency livestream
+    e) site - source of values`
   },
   'currency': (message, id) => {
     if (currenciesRate[message] === {} || !currenciesRate[message])
       return `Couldn't retrieve currency. Try later`;
     return `1 ${message} is worth ${currenciesRate[message].last}`;
   },
+  'site': (message, id) => 'https://poloniex.com',
   'stop': (message, id) => {
-    return `Livestreaming currency has stopped`;
+    Users.deleteUser(id, (error) => {
+      if (error) {
+        console.log(error);
+        return 'Error while stopping the stream. Try another time please.';
+      }
+    });
+    
+    return 'Livestreaming currency has stopped';
   },
   livestream: (message, id) => {
+    const arr = message.split(' ');
+    
+    Users.insert({
+      user_id: id,
+      last_text: message,
+      last_livestream_value: parseFloat(arr[3]),
+      currency: arr[0]
+    }, (error, result) => {
+      if (error) {
+        console.log(error);
+        return 'Error while starting the stream. Try another time please.';
+      }
+      
+      if (currenciesRate[message] === {} || !currenciesRate[message])
+        return `Couldn't retrieve currency. Try later`;
+      
+      if (parseFloat(arr[3]) === currenciesRate[arr[0]].last)
+        return `Starting stream... ${arr[0]} reached your desired value.`;
+      
+      return 'Starting stream...';
+    });
   }
 };
 
@@ -145,6 +181,22 @@ setInterval(() => {
     .then(response => {
       for (let index = 0; index < supportedCurrencies.length; index++) {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
+        
+        if (index === supportedCurrencies.length) {
+          Users.selectAllUsers((error, users) => {
+            if (error)
+              return console.log(error);
+            
+            users.forEach(user => {
+              if (currenciesRate && user.last_livestream_value === currenciesRate[user.currency].last) {
+                callSendApi({
+                  recipient: { id: user.user_id },
+                  message: { text: `${user.currency} reached your desired value.` }
+                });
+              }
+            });
+          });
+        }
       }
     })
     .catch(error => {
