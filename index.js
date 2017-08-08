@@ -1,14 +1,22 @@
-var express = require('express');
-var app = express();
+'use strict';
+
+const express = require('express');
+const app = express();
 
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
 
-// views is directory for all template files
+app.get('/', (request, response) => {
+  response.status(200).send('index');
+});
 
-app.get('/', function(request, response) {
-  response.status(200).send('fuck off');
+app.get('/', (request, response) => {
+  response.status(200).send('web hook');
+});
+
+app.get('*', (request, response) => {
+  response.status(404).send('no page here you dummy');
 });
 
 app.listen(app.get('port'), function() {
