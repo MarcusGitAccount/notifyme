@@ -33,12 +33,12 @@ const messages = {
     d) stop/end/terminate to end currency livestream`
   },
   'currency': (message, id) => {
-    if (currenciesRate[message].last)
-      return `1 ${message} is worth ${currenciesRate[message].last}`;
-    return `Couldn't retrieve currency. Try later`;
+    if (currenciesRate[message] === {} || !currenciesRate[message])
+      return `Couldn't retrieve currency. Try later`;
+    return `1 ${message} is worth ${currenciesRate[message].last}`;
   },
   'stop': (message, id) => {
-    `Livestreaming currency has stopped`
+    return `Livestreaming currency has stopped`;
   },
   livestream: (message, id) => {
   }
