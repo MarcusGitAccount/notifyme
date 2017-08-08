@@ -31,7 +31,7 @@ function processMessage(event) {
 }
 
 function sendMessage(id, text) {
-  console.log(id, text);
+  console.log(id, text, 'next help pls');
   
   // logic
   if (text === 'help') {
