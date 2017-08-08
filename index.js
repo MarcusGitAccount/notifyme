@@ -1,9 +1,11 @@
 'use strict';
 
+const UPDATE_TIME = 1 * 60 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
 
+const fetch = require('node-fetch');
 const url = require('url');
 
 const express = require('express');
@@ -12,14 +14,23 @@ const req = require('request');
 
 const app = express();
 
+const expressions = {
+  'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
+  'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
+  'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`)
+};
 const messages = {
+  'hello': () => 'Greetings',
   'help': () => {
     return `Available commands: 
-            a) sc up to <value> 
-            b) sc down to <value> 
-            c) help`;
+    a) sc up to <value> 
+    b) sc down to <value> 
+    c) help`;
   }
-}
+};
+
+const supportedCurrencies = ['SC'];
+const currenciesRate = {};
 
 app.set('port', (process.env.PORT || 5000));
 app.set('case sensitive routing', true);
@@ -69,7 +80,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', (request, response) => {
   console.log('here i lay in pure sadness')
-  response.status(200).send('index');
+  response.status(200).send(JSON.stringify(currenciesRate, null, 2));
 });
 
 // verify page if valid
@@ -109,3 +120,16 @@ app.get('*', (request, response) => {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+
+setInterval(() => {
+  fetch(POLONIEX_URL_TICKER, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'},
+  })
+    .then(response => response.json())
+    .then(response => {
+      for (let index = 0; index < supportedCurrencies.length; index++) {
+        currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
+      }
+    });
+}, UPDATE_TIME);
