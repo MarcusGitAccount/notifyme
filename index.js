@@ -3,7 +3,7 @@
 // dbconnection_pass~eurobtc2017
 // marcuspop
 
-const UPDATE_TIME = 1 * 60 * 1000;
+const UPDATE_TIME = .5 * 60 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
@@ -29,11 +29,12 @@ const expressions = {
   'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
   'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
   'stop': new RegExp(/^stop|end|terminate$/),
-  'site': new RegExp(/^site/)
+  'site': new RegExp(/^site$/),
+  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{0-8}$`)
 };
 const messages = {
-  'hello': (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
-  'help': (message, id) => {
+  hello: (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
+  help: (message, id) => {
     return `Available commands: 
     a) sc to <value> to get notifications when Siacon reaches <value>. 1 minute stream.
     b) ${supportedCurrencies.join('; ')} to get the currency value in BTC.
@@ -41,13 +42,13 @@ const messages = {
     d) stop/end/terminate to end currency livestream
     e) site - source of values`
   },
-  'currency': (message, id) => {
+  currency: (message, id) => {
     if (currenciesRate[message] === {} || !currenciesRate[message])
       return `Couldn't retrieve currency. Try later`;
     return `1 ${message} is worth ${currenciesRate[message].last}`;
   },
-  'site': (message, id) => 'https://poloniex.com',
-  'stop': (message, id) => {
+  site: (message, id) => 'https://poloniex.com',
+  stop: (message, id) => {
     Users.deleteUser(id, (error) => {
       if (error) {
         console.log(error);
