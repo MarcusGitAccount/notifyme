@@ -27,10 +27,12 @@ const Users = new UsersModel();
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
   'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
-  'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
+  //'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
+  'currency': new RegExp(`^sc$`),
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
-  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
+  //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
+  'livestream': new RegExp(`^sc to [\d]+\.[\d]{8}$`)
 };
 const messages = {
   hello: (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
@@ -47,7 +49,7 @@ const messages = {
     
     if (currenciesRate[message] === {} || !currenciesRate[message])
       return `Couldn't retrieve currency. Try later`;
-    return `1 ${message} is worth ${currenciesRate[message].last}`;
+    return `1 ${message} is worth ${currenciesRate[message].last} bitcoin`;
   },
   site: (message, id) => 'https://poloniex.com',
   stop: (message, id) => {
