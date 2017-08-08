@@ -21,7 +21,7 @@ app.get('/', (request, response) => {
 });
 
 app.get('/webhook', (request, response) => {
-  if (request.query['hub.mode'] === 'subscribe' && request.query['hub.verify_token'] === VERIFY_TOKEN)
+  if (request.query['hub.verify_token'] === VERIFY_TOKEN)
     request.status(200).send(request.query['hub.challenge']);
   else
     response.sendStatus(403);          
