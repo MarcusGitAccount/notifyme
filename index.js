@@ -75,10 +75,6 @@ const messages = {
         return 'Error while starting the stream. Try another time please.';
       }
       
-      
-      if (currenciesRate[arr[0]] === {} || !currenciesRate[arr[0]])
-        return `Couldn't retrieve currency. Try later`;
-      
       if (parseFloat(arr[2]) === currenciesRate[arr[0]].last)
         return `Starting stream... ${arr[0]} reached your desired value.`;
       
