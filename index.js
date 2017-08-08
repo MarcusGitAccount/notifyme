@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 function processMessage(event) {
   console.log('tryng to get the message')
   
-  sendMessage(event.sender.id, JSON.stringify(event.message.text, null, 2));
+  sendMessage(event.sender.id, event.message.text);
 }
 
 function sendMessage(id, text) {
