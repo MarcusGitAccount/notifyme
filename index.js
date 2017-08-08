@@ -1,5 +1,7 @@
 'use strict';
 
+const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -19,7 +21,10 @@ app.get('/', (request, response) => {
 });
 
 app.get('/webhook', (request, response) => {
-  response.status(200).send('web hook');
+  if (request.query['hub.mode'] === 'subscribe' && request.query['hub.verify_token'] === VERIFY_TOKEN)
+    request.status(200).send(request.query['hub.challenge']);
+  else
+    response.sendStatus(403);          
 });
 
 app.get('*', (request, response) => {
