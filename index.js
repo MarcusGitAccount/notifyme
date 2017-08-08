@@ -32,7 +32,7 @@ const expressions = {
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
   //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
-  'livestream': new RegExp(`^sc to [\d]+\.[\d]{8}$`)
+  'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/)
 };
 const messages = {
   hello: (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
