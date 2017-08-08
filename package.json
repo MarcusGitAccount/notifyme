@@ -1,0 +1,33 @@
+{
+  "name": "notifymechatbot",
+  "version": "1.0.0",
+  "description": "facebook messenger bot for poloniex api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcusGitAccount/notifyme.git"
+  },
+  "keywords": [
+    "poliniex",
+    "sc",
+    "btc",
+    "facebook",
+    "messenger"
+  ],
+  "author": "Marcus Pop",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcusGitAccount/notifyme/issues"
+  },
+  "homepage": "https://github.com/MarcusGitAccount/notifyme#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4",
+    "morgan": "^1.8.2",
+    "mysql": "^2.14.1"
+  }
+}
