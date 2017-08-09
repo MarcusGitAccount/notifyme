@@ -8,9 +8,7 @@ const _db = Symbol('_db');
 class MongoConnection {
   constructor() {
     console.log('Connected to mongodb.');
-    mongoose.createConnection('mongodb://marcuspop:dbconnection_pass~eurobtc2017@ds039271.mlab.com:39271/notifymedb');
-    mongoose.Promise = global.Promise;
-    this[_db] = mongoose.connection;
+    mongoose.createConnection(process.env.MONGOLAB_URI);
     mongoose.Promise = global.Promise;
     this[_db] = mongoose.connection;
   }
