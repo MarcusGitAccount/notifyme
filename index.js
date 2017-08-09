@@ -65,49 +65,41 @@ const messages = {
   },
   site: (message, id, callback) => callback('https://poloniex.com'),
   stop: (message, id, callback) => {
-    /*Users.deleteUser(id, (error) => {
-      if (error) {
-        console.log(error);
+    Users.findOneAndRemove({user_id: id}, (err) => {
+      if (err) {
         callback('Error while stopping the stream. Try another time please.');
-        return;
+        return console.log(err);
       }
       callback('Livestreaming currency has stopped');
-    });*/
+      
+    });
     
   },
   livestream: (message, id, callback) => {
     const arr = message.split(' ');
-
-    console.log('LIVESTREAM', arr, JSON.stringify(Users, null, 2));
-
-    
-    if (arr[2] === "0.00000000")
-      return callback('Invalid value');
-    
-    console.log('so, uhm 2')/*
-    Users.insert({
+    const user = new Users({
       user_id: id,
       last_text: message,
       last_livestream_value: arr[2],
       currency: arr[0]
-    }, (error, result) => {
-      console.log('...', error, result)
-      
-      console.log('so, uhm')
-      if (error) {
+    });
+    
+    console.log('LIVESTREAM', arr);
+
+    if (arr[2] === "0.00000000")
+      return callback('Invalid value');
+
+    user.save((error, result) => {
+       if (error) {
         console.log(error);
         return callback('Error while starting the stream. Try another time please.' + error + ' ' + arr[2]);
       }
       
-      
-      console.log('so, uhm 3')
       if (arr[2] === currenciesRate[arr[0]].last)
         return callback(`Starting stream... ${arr[0]} reached your desired value.`);
       
-      console.log('sent');
-
       callback('Starting stream...');
-    });*/
+    });
   }
 };
 
@@ -220,8 +212,8 @@ setInterval(() => {
       for (let index = 0; index < supportedCurrencies.length; index++) {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
-        if (index === supportedCurrencies.length) {/*
-          Users.selectAllUsers((error, users) => {
+        if (index === supportedCurrencies.length) {
+          Users.find({}, (error, users) => {
             if (error)
               return console.log(error);
             
@@ -233,7 +225,7 @@ setInterval(() => {
                 });
               }
             });
-          });*/
+          });
         }
       }
     })
