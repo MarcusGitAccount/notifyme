@@ -117,7 +117,7 @@ const messages = {
         return callback('Something wrong happened');
       }
       
-      callback(`You will recieve a message when Siacoin will reach ${user.last_livestream_value} BTC.`);
+      callback(`You will receive a message when Siacoin will reach ${user.last_livestream_value} BTC.`);
     });
   }
 };
