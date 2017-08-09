@@ -218,12 +218,13 @@ setInterval(() => {
       for (let index = 0; index < supportedCurrencies.length; index++) {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
-        if (index === supportedCurrencies.length) {
+        if (index === supportedCurrencies.length - 1) {
           console.log('ending')
           Users.find({}, (error, users) => {
             if (error)
               return console.log(error);
             
+            console.log(users);
             users.forEach(user => {
               callSendApi({
                 recipient: { id: user.user_id },
