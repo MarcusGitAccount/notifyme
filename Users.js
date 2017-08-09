@@ -19,23 +19,20 @@ const UserSchema = new Schema({
 
 const Users = mongoose.model('users', UserSchema);
 
-
 class UserModel {
   constructor() {
-    console.log('24:', JSON.stringify(Users, null, 2));
+    console.log('new model instance ')
   }
   
   insert(data, callback) {
     const user = new Users(data);
     
-    console.log(data)
     user.save((err, result) => {
-      console.log(err, result)
       if (err) {
-        callback(err); console.log(err)
+        callback(err);
         return ;
       }
-      console.log('user inserted')
+      
       callback(null, result);
     });
   }
