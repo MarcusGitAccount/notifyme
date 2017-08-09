@@ -14,7 +14,7 @@ const UserSchema = new Schema({
   user_id: {type: String, unique: true},
   currency: {type: String},
   last_text: {type: String, default: null},
-  last_livestream_value: {type: Number, default: null}
+  last_livestream_value: {type: String, default: null}
 });
 
 const Users = mongoose.model('users', UserSchema);

@@ -48,7 +48,7 @@ const messages = {
     console.log('CURRENCY');
     
     if (currenciesRate[message] === {} || !currenciesRate[message]) {
-      callback(`Couldn't retrieve currency. Try later` + message + ' ' + id);
+      callback(`Couldn't retrieve currency. Try later`);
       return ;
     }
     callback(`1 ${message} is worth ${currenciesRate[message].last} bitcoin`);
@@ -82,10 +82,10 @@ const messages = {
     }, (error, result) => {
       if (error) {
         console.log(error);
-        return callback('Error while starting the stream. Try another time please.' + error + ' ' + parseFloat(arr[2]));
+        return callback('Error while starting the stream. Try another time please.' + error + ' ' + arr[2]);
       }
       
-      if (parseFloat(arr[2]) === currenciesRate[arr[0]].last)
+      if (arr[2] === currenciesRate[arr[0]].last)
         return callback(`Starting stream... ${arr[0]} reached your desired value.`);
       
       console.log('sent');
