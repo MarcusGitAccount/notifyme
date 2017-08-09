@@ -275,7 +275,7 @@ setInterval(() => {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
         if (index === supportedCurrencies.length) {
-          model.selectAllmodel((error, model) => {
+          model.selectAllUsers((error, model) => {
             if (error)
               return console.log(error);
             
