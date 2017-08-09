@@ -41,20 +41,18 @@ const expressions = {
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
   //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
-  'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/),
-//  'current': new RegExp(/^current$/)
+  'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/)
 };
 
 const messages = {
   hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
   help: (message, id, callback) => {
     callback( `Available commands: 
-    a) sc to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
+    a) sc to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 digit number. Example: 'sc to 0.00000277'
     b) ${supportedCurrencies.join('; ')} to get the currency value in BTC.
     c) help
     d) stop/end/terminate to end currency livestream
-    e) site - source of values
-    f) current - get the value of current stream`);
+    e) site - source of values`);
   },
   currency: (message, id, callback) => {
     console.log('CURRENCY');
@@ -108,17 +106,9 @@ const messages = {
         callback('Starting stream... Previous stream will be stopped if one exists.');
       });
     });
-  },/*
-  current: (message, id, callback) => { 
-    Users.findOne({user_id: id}, (error, user) => {
-      if (error) {
-        console.log(error);
-        return callback('Something wrong happened');
-      }
-      
-      callback(`You will recieve a message when Siacoin will reach ${user.last_livestream_value} BTC.`);
-    });
-  }*/
+    
+    
+  }
 };
 
 app.set('port', (process.env.PORT || 5000));
@@ -236,7 +226,7 @@ setInterval(() => {
               return console.log(error);
           
             users.forEach(user => {
-              if (currenciesRate[user.currency] && user.last_livestream_value === currenciesRate[user.currency].last) {
+              if (currenciesRate && user.last_livestream_value === currenciesRate[user.currency].last) {
                 console.log('ending for ', user.user_id);
                 
                 Users.findOneAndRemove({user_id: user.user_id}, (err) => {
