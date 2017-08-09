@@ -14,14 +14,15 @@ const currenciesRate = {};
 const fetch = require('node-fetch');
 const url = require('url');
 
+const mongoose = require('moongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const req = require('request');
 
-const UsersModel = require('./Users');
+//const UsersModel = require('./Users');
 
 const app = express();
-const Users = new UsersModel();
+//const Users = new UsersModel();
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
@@ -55,14 +56,14 @@ const messages = {
   },
   site: (message, id, callback) => callback('https://poloniex.com'),
   stop: (message, id, callback) => {
-    Users.deleteUser(id, (error) => {
+    /*Users.deleteUser(id, (error) => {
       if (error) {
         console.log(error);
         callback('Error while stopping the stream. Try another time please.');
         return;
       }
       callback('Livestreaming currency has stopped');
-    });
+    });*/
     
   },
   livestream: (message, id, callback) => {
@@ -74,7 +75,7 @@ const messages = {
     if (arr[2] === "0.00000000")
       return callback('Invalid value');
     
-    console.log('so, uhm 2')
+    console.log('so, uhm 2')/*
     Users.insert({
       user_id: id,
       last_text: message,
@@ -97,7 +98,7 @@ const messages = {
       console.log('sent');
 
       callback('Starting stream...');
-    });
+    });*/
   }
 };
 
@@ -144,12 +145,6 @@ function callSendApi(data) {
   });
 }
 
-Users.selectAllUsers((error, result) => {
-  if (error)
-    return console.log(error);
-    
-  console.log(result);
-});
 
 app.use(express.static(__dirname + '/public'));
 
@@ -189,8 +184,14 @@ app.get('*', (request, response) => {
   response.status(404).send('no page here you dummy');
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+mongoose.connect(process.env.MONGODB_URI, (err, res) => {
+  if (err) 
+    return console.log(err);
+    
+  console.log ('Succeeded connected to mongodb');
+    app.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'));
+  });
 });
 
 setInterval(() => {
@@ -203,7 +204,7 @@ setInterval(() => {
       for (let index = 0; index < supportedCurrencies.length; index++) {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
-        if (index === supportedCurrencies.length) {
+        if (index === supportedCurrencies.length) {/*
           Users.selectAllUsers((error, users) => {
             if (error)
               return console.log(error);
@@ -216,7 +217,7 @@ setInterval(() => {
                 });
               }
             });
-          });
+          });*/
         }
       }
     })
