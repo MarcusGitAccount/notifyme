@@ -115,7 +115,7 @@ function processMessage(event) {
 
 function sendMessage(id, text) {
   Object.keys(expressions).forEach(regexpKey => {
-    if (expressions[regexpKey].test(text, id)) {
+    if (expressions[regexpKey].test(text.toLowerCase().trim())) {
       messages[regexpKey](text, id, (message) => {
          callSendApi({
           recipient: { id },
@@ -218,6 +218,8 @@ setInterval(() => {
               return console.log(error);
             
             users.forEach(user => {
+              console.log(currenciesRate[user.currency].last, user.last_livestream_value )
+              
               if (currenciesRate && user.last_livestream_value === currenciesRate[user.currency].last) {
                 callSendApi({
                   recipient: { id: user.user_id },
