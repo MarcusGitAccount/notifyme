@@ -42,7 +42,7 @@ const expressions = {
   'site': new RegExp(/^site$/),
   //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
   'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/),
-  'current': new RegExp(/^current$/)
+//  'current': new RegExp(/^current$/)
 };
 
 const messages = {
@@ -108,7 +108,7 @@ const messages = {
         callback('Starting stream... Previous stream will be stopped if one exists.');
       });
     });
-  },
+  },/*
   current: (message, id, callback) => { 
     Users.findOne({user_id: id}, (error, user) => {
       if (error) {
@@ -116,9 +116,9 @@ const messages = {
         return callback('Something wrong happened');
       }
       
-      callback(`You will recieve a message when Siacoin will reach ${user.last_livestream_value} BTC.`)
+      callback(`You will recieve a message when Siacoin will reach ${user.last_livestream_value} BTC.`);
     });
-  }
+  }*/
 };
 
 app.set('port', (process.env.PORT || 5000));
