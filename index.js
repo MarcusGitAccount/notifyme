@@ -85,6 +85,8 @@ const messages = {
       if (parseFloat(arr[2]) === currenciesRate[arr[0]].last)
         return `Starting stream... ${arr[0]} reached your desired value.`;
       
+      console.log('sent');
+
       return 'Starting stream...';
     });
   }
