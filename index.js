@@ -14,7 +14,7 @@ const currenciesRate = {};
 const fetch = require('node-fetch');
 const url = require('url');
 
-const mongoose = require('moongoose');
+const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const req = require('request');
