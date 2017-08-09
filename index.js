@@ -17,11 +17,77 @@ const url = require('url');
 const express = require('express');
 const bodyParser = require('body-parser');
 const req = require('request');
+const mongoose = require('mongoose');
 
-const UsersModel = require('./Users');
+//const modelModel = require('./model');
 
 const app = express();
-const Users = new UsersModel();
+//const model = new modelModel();
+
+const UserSchema = new mongoose.Schema({
+  user_id: {type: String, unique: true},
+  currency: {type: String},
+  last_text: {type: String, default: null},
+  last_livestream_value: {type: String, default: null}
+});
+
+const Users = mongoose.model('users', UserSchema);
+
+class UsersModel {
+  constructor() {
+    console.log('24:', JSON.stringify(Users, null, 2));
+  }
+  
+  insert(data, callback) {
+    const user = new Users(data);
+    
+    console.log(data)
+    user.save((err, result) => {
+      console.log(err, result)
+      if (err) {
+        callback(err); console.log(err)
+        return ;
+      }
+      console.log('user inserted')
+      callback(null, result);
+    });
+  }
+  
+  selectUser(data, callback) {
+    Users.findOne(data, (err, result) => {
+      if (err) {
+        callback(err);
+        return ;
+      }
+      
+      callback(null, result);
+    });
+  }
+  
+  selectAllUsers(callback) {
+    Users.find({}, (err, result) => {
+      if (err) {
+        callback(err);
+        return ;
+      }
+      
+      callback(null, result);
+    });
+  }
+  
+  deleteUser(user_id, callback) {
+    Users.findOneAndRemove({user_id}, (err) => {
+      if (err) {
+        callback(err);
+        return ;
+      }
+      
+      callback(null);
+    });
+  }
+}
+
+const model = new UsersModel();
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
@@ -55,7 +121,7 @@ const messages = {
   },
   site: (message, id, callback) => callback('https://poloniex.com'),
   stop: (message, id, callback) => {
-    Users.deleteUser(id, (error) => {
+    model.deleteUser(id, (error) => {
       if (error) {
         console.log(error);
         callback('Error while stopping the stream. Try another time please.');
@@ -72,7 +138,7 @@ const messages = {
       return callback('Invalid value');
     
     console.log('so, uhm 2')
-    Users.insert({
+    model.insert({
       user_id: id,
       last_text: message,
       last_livestream_value: arr[2],
@@ -141,7 +207,7 @@ function callSendApi(data) {
   });
 }
 
-Users.selectAllUsers((error, result) => {
+model.selectAllmodel((error, result) => {
   if (error)
     return console.log(error);
     
@@ -151,7 +217,6 @@ Users.selectAllUsers((error, result) => {
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (request, response) => {
-  //console.log('here i lay in pure sadness')
   response.status(200).send(JSON.stringify(currenciesRate, null, 2));
 });
 
@@ -168,9 +233,7 @@ app.get('/webhook', (request, response) => {
 app.post('/webhook', (request, response) => {
   console.log('posting');
   if (request.body.object === 'page') {
-    //console.log(request.body.entry)
     request.body.entry.forEach((entry) => {
-      //console.log('message ', entry);
       entry.messaging.forEach((event) => {
         if (event.message) {
           processMessage(event);
@@ -189,8 +252,16 @@ app.get('*', (request, response) => {
   response.status(404).send('no page here you dummy');
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+mongoose.connect(process.env.MONGOLAB_URI, (error) => {
+    if (error){
+      return console.error(error);
+    }
+    
+    console.log('mongo connected');
+    app.listen(app.get('port'), function() {
+      console.log('MONGO_URI', process.env.MONGOLAB_URI);
+      console.log('Node app is running on port', app.get('port'));
+    });
 });
 
 setInterval(() => {
@@ -204,11 +275,11 @@ setInterval(() => {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
         if (index === supportedCurrencies.length) {
-          Users.selectAllUsers((error, users) => {
+          model.selectAllmodel((error, model) => {
             if (error)
               return console.log(error);
             
-            users.forEach(user => {
+            model.forEach(user => {
               if (currenciesRate && user.last_livestream_value === currenciesRate[user.currency].last) {
                 callSendApi({
                   recipient: { id: user.user_id },
@@ -225,4 +296,3 @@ setInterval(() => {
     });
 }, UPDATE_TIME);
 
-console.log('MONGO_URI', process.env.MONGOLAB_URI);
