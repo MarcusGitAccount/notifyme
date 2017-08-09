@@ -259,5 +259,4 @@ setInterval(() => {
     })
     .catch(error => {
       console.log(`Fetch error: ${error}`);
-    });}, UPDATE_TIME);h error: ${error}`);
     });}, UPDATE_TIME);
