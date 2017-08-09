@@ -27,6 +27,7 @@ class UserModel {
   insert(data, callback) {
     const user = new Users(data);
     
+    console.log(data)
     user.save((err, result) => {
       if (err) {
         callback(err);
