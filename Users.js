@@ -19,7 +19,12 @@ const UserSchema = new Schema({
 
 const Users = mongoose.model('users', UserSchema);
 
+
 class UserModel {
+  constructor() {
+    console.log('24:', JSON.stringify(Users, null, 2));
+  }
+  
   insert(data, callback) {
     const user = new Users(data);
     
