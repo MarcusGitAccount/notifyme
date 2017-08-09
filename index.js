@@ -88,18 +88,26 @@ const messages = {
 
     if (arr[2] === "0.00000000")
       return callback('Invalid value');
-
-    user.save((error, result) => {
-       if (error) {
-        console.log(error);
-        return callback('Error while starting the stream. Try another time please.' + error + ' ' + arr[2]);
+    
+    Users.findOneAndRemove({user_id: id}, (err) => {
+      if (err) {
+        return console.log(err);
       }
       
-      if (arr[2] === currenciesRate[arr[0]].last)
-        return callback(`Starting stream... ${arr[0]} reached your desired value.`);
-      
-      callback('Starting stream...');
+      user.save((error, result) => {
+        if (error) {
+          console.log(error);
+          return callback('Error while starting the stream. Try another time please.' + error + ' ' + arr[2]);
+        }
+        
+        if (arr[2] === currenciesRate[arr[0]].last)
+          return callback(`Starting stream... ${arr[0]} reached your desired value.`);
+        
+        callback('Starting stream...');
+      });
     });
+    
+    
   }
 };
 
@@ -187,14 +195,14 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
   if (err) 
     return console.log(err);
     
-  console.log ('Succeeded connected to mongodb');
+  console.log ('Succeeded connecting to mongodb');
     app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
   });
   
   Users.find({}, (err, result) => {
     if (err)
-      return console.log(err)
+      return console.log(err);
     
     result.forEach(user => {
       callSendApi({
@@ -202,7 +210,8 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
         message: { text: 'initial'}
       });
     });
-    console.log(result)
+    
+    console.log(result);
   });
 });
 
@@ -219,26 +228,25 @@ setInterval(() => {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
         if (index === supportedCurrencies.length - 1) {
-          console.log('ending')
           Users.find({}, (error, users) => {
             if (error)
               return console.log(error);
-            
-            console.log(users);
+          
             users.forEach(user => {
-              callSendApi({
-                recipient: { id: user.user_id },
-                message: { text: currenciesRate[user.currency].last }
-              });
-              
-              console.log(currenciesRate[user.currency].last, user.last_livestream_value )
-              /*
               if (currenciesRate && user.last_livestream_value === currenciesRate[user.currency].last) {
-                callSendApi({
-                  recipient: { id: user.user_id },
-                  message: { text: `${user.currency} reached your desired value.` }
+                console.log('ending for ', user.user_id);
+                
+                Users.findOneAndRemove({user_id: user.user_id}, (err) => {
+                  if (err) {
+                    return console.log(err);
+                  }
+                  
+                  callSendApi({
+                    recipient: { id: user.user_id },
+                    message: { text: `${user.currency} reached your desired value.` }
+                  });
                 });
-              }*/
+              }
             });
           });
         }
