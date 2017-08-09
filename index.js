@@ -22,7 +22,7 @@ const req = require('request');
 const app = express();
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
-const UserSchema = new new Schema({
+const UserSchema = new Schema({
   id: ObjectId,
   user_id: {type: String, unique: true},
   currency: {type: String},
