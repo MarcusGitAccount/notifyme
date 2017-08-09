@@ -68,16 +68,17 @@ const messages = {
   livestream: (message, id, callback) => {
     const arr = message.split(' ');
 
-    console.log('LIVESTREAM', arr);
+    console.log('LIVESTREAM', arr, JSON.stringify(Users, null, 2));
 
     
     if (arr[2] === "0.00000000")
       return callback('Invalid value');
     
+    console.log('so, uhm 2')
     Users.insert({
       user_id: id,
       last_text: message,
-      last_livestream_value: parseFloat(arr[2]),
+      last_livestream_value: arr[2],
       currency: arr[0]
     }, (error, result) => {
       console.log('so, uhm')
@@ -86,6 +87,8 @@ const messages = {
         return callback('Error while starting the stream. Try another time please.' + error + ' ' + arr[2]);
       }
       
+      
+      console.log('so, uhm 3')
       if (arr[2] === currenciesRate[arr[0]].last)
         return callback(`Starting stream... ${arr[0]} reached your desired value.`);
       
