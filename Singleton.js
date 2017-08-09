@@ -26,7 +26,7 @@ module.exports = function singleton() {
   if (!instance)
     instance = new MongoConnection();
   
-  console.log('instance', instance)
+  console.log('instance', JSON.stringify(instance, null, 2))
   
   return instance;
 };
