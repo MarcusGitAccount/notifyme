@@ -252,16 +252,13 @@ app.get('*', (request, response) => {
   response.status(404).send('no page here you dummy');
 });
 
-mongoose.connect(process.env.MONGOLAB_URI, (error) => {
-    if (error){
-      return console.error(error);
-    }
+mongoose.connect(process.env.MONGOLAB_URI,{
+  useMongoClient: true
+};
     
-    console.log('mongo connected');
-    app.listen(app.get('port'), function() {
-      console.log('MONGO_URI', process.env.MONGOLAB_URI);
-      console.log('Node app is running on port', app.get('port'));
-    });
+app.listen(app.get('port'), function() {
+  console.log('MONGO_URI', process.env.MONGOLAB_URI);
+  console.log('Node app is running on port', app.get('port'));
 });
 
 setInterval(() => {
