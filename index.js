@@ -207,6 +207,8 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
 });
 
 setInterval(() => {
+  console.log('tick');
+  
   fetch(POLONIEX_URL_TICKER, {
     method: 'GET',
     headers: {'Content-Type': 'application/json'},
@@ -243,5 +245,4 @@ setInterval(() => {
     })
     .catch(error => {
       console.log(`Fetch error: ${error}`);
-    });
-}, UPDATE_TIME);
+    });}, UPDATE_TIME);
