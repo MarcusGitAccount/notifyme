@@ -19,10 +19,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const req = require('request');
 
-//const UsersModel = require('./Users');
-
 const app = express();
-//const Users = new UsersModel();
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const UserSchema = new new Schema({
+  id: ObjectId,
+  user_id: {type: String, unique: true},
+  currency: {type: String},
+  last_text: {type: String, default: null},
+  last_livestream_value: {type: String, default: null}
+});
+
+const Users = mongoose.model('users', UserSchema);
+
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
@@ -191,6 +200,13 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
   console.log ('Succeeded connected to mongodb');
     app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
+  });
+  
+  Users.find({}, (err, result) => {
+    if (err)
+      return console.log(err)
+    
+    console.log(result)
   });
 });
 
