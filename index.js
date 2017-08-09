@@ -3,7 +3,7 @@
 // dbconnection_pass~eurobtc2017
 // marcuspop
 
-const UPDATE_TIME = .5 * 60 * 1000;
+const UPDATE_TIME = .25 * 60 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
@@ -126,8 +126,6 @@ function sendMessage(id, text) {
     
     return ;
   });
-
-  
 }
 
 function callSendApi(data) {
@@ -213,19 +211,25 @@ setInterval(() => {
         currenciesRate[supportedCurrencies[index]] = response[`BTC_${supportedCurrencies[index].toUpperCase()}`];
         
         if (index === supportedCurrencies.length) {
+          console.log('ending')
           Users.find({}, (error, users) => {
             if (error)
               return console.log(error);
             
             users.forEach(user => {
-              console.log(currenciesRate[user.currency].last, user.last_livestream_value )
+              callSendApi({
+                recipient: { id: user.user_id },
+                message: { text: `${user.currency} reached your desired value.` }
+              });
               
+              console.log(currenciesRate[user.currency].last, user.last_livestream_value )
+              /*
               if (currenciesRate && user.last_livestream_value === currenciesRate[user.currency].last) {
                 callSendApi({
                   recipient: { id: user.user_id },
                   message: { text: `${user.currency} reached your desired value.` }
                 });
-              }
+              }*/
             });
           });
         }
