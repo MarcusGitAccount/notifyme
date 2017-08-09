@@ -17,7 +17,7 @@ const UserSchema = new Schema({
   last_livestream_value: {type: String, default: null}
 });
 
-const Users = mongoose.model('users', UserSchema);
+const Users = mongoose.model('users', UserSchema, Connection);
 
 
 class UserModel {
