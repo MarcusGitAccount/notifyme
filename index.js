@@ -48,7 +48,7 @@ const messages = {
     console.log('CURRENCY');
     
     if (currenciesRate[message] === {} || !currenciesRate[message]) {
-      callback(`Couldn't retrieve currency. Try later` + message);
+      callback(`Couldn't retrieve currency. Try later` + message + ' ' + id);
       return ;
     }
     callback(`1 ${message} is worth ${currenciesRate[message].last} bitcoin`);
