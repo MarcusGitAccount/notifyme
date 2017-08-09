@@ -30,10 +30,10 @@ class UserModel {
     console.log(data)
     user.save((err, result) => {
       if (err) {
-        callback(err);
+        callback(err); console.log(err)
         return ;
       }
-      
+      console.log('user inserted')
       callback(null, result);
     });
   }
