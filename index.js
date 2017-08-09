@@ -71,7 +71,7 @@ const messages = {
     console.log('LIVESTREAM', arr);
 
     
-    if (parseFloat(arr[2]) === 0)
+    if (arr[2] === "0.00000000")
       return callback('Invalid value');
     
     Users.insert({
@@ -80,6 +80,7 @@ const messages = {
       last_livestream_value: parseFloat(arr[2]),
       currency: arr[0]
     }, (error, result) => {
+      console.log('so, uhm')
       if (error) {
         console.log(error);
         return callback('Error while starting the stream. Try another time please.' + error + ' ' + arr[2]);
@@ -104,15 +105,10 @@ app.use(bodyParser.urlencoded({ 'extended': true}));
 app.use(bodyParser.json());
 
 function processMessage(event) {
-  //console.log('tryng to get the message')
-  
   sendMessage(event.sender.id, event.message.text);
 }
 
 function sendMessage(id, text) {
-  //console.log(id, text, 'next help pls');
-  
-  // logic
   Object.keys(expressions).forEach(regexpKey => {
     if (expressions[regexpKey].test(text, id)) {
       messages[regexpKey](text, id, (message) => {
@@ -174,7 +170,7 @@ app.post('/webhook', (request, response) => {
           processMessage(event);
         }
         else {
-          console.log('Uhm, you were supposed to send me a message ):', JSON.stringify(event, null, 2));
+          console.log('Uhm, you were supposed to send me a message ):');
         }
       });
     });
