@@ -35,41 +35,44 @@ const expressions = {
   'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/)
 };
 const messages = {
-  hello: (message, id) => 'Greetings to you. For a list of available commands please type help. Thank you.',
-  help: (message, id) => {
-    return `Available commands: 
+  hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
+  help: (message, id, callback) => {
+    callback( `Available commands: 
     a) sc to <value> to get notifications when Siacon reaches <value>. 1 minute stream.
     b) ${supportedCurrencies.join('; ')} to get the currency value in BTC.
     c) help
     d) stop/end/terminate to end currency livestream
-    e) site - source of values`
+    e) site - source of values`);
   },
-  currency: (message, id) => {
+  currency: (message, id, callback) => {
     console.log('CURRENCY');
     
-    if (currenciesRate[message] === {} || !currenciesRate[message])
-      return `Couldn't retrieve currency. Try later`;
-    return `1 ${message} is worth ${currenciesRate[message].last} bitcoin`;
+    if (currenciesRate[message] === {} || !currenciesRate[message]) {
+      callback(`Couldn't retrieve currency. Try later`);
+      return ;
+    }
+    callback(`1 ${message} is worth ${currenciesRate[message].last} bitcoin`);
   },
-  site: (message, id) => 'https://poloniex.com',
-  stop: (message, id) => {
+  site: (message, id, callback) => callback('https://poloniex.com'),
+  stop: (message, id, callback) => {
     Users.deleteUser(id, (error) => {
       if (error) {
         console.log(error);
-        return 'Error while stopping the stream. Try another time please.';
+        callback('Error while stopping the stream. Try another time please.');
+        return;
       }
     });
     
-    return 'Livestreaming currency has stopped';
+    callback('Livestreaming currency has stopped');
   },
-  livestream: (message, id) => {
+  livestream: (message, id, callback) => {
     const arr = message.split(' ');
 
     console.log('LIVESTREAM', arr);
 
     
     if (parseFloat(arr[2]) === 0)
-      return 'Invalid value';
+      return callback('Invalid value');
     
     return Users.insert({
       user_id: id,
@@ -79,15 +82,15 @@ const messages = {
     }, (error, result) => {
       if (error) {
         console.log(error);
-        return 'Error while starting the stream. Try another time please.';
+        return callback('Error while starting the stream. Try another time please.');
       }
       
       if (parseFloat(arr[2]) === currenciesRate[arr[0]].last)
-        return `Starting stream... ${arr[0]} reached your desired value.`;
+        return callback(`Starting stream... ${arr[0]} reached your desired value.`);
       
       console.log('sent');
 
-      return 'Starting stream...';
+      callback('Starting stream...');
     });
   }
 };
@@ -111,13 +114,15 @@ function sendMessage(id, text) {
   
   // logic
   Object.keys(expressions).forEach(regexpKey => {
-    if (expressions[regexpKey].test(text)) {
-      callSendApi({
-        recipient: { id },
-        message: { text: messages[regexpKey](text, id) }
+    if (expressions[regexpKey].test(text, id)) {
+      messages[regexpKey](id, text, (message) => {
+         callSendApi({
+          recipient: { id },
+          message: { text: message }
+        });
       });
     }
-  })
+  });
 
   
 }
