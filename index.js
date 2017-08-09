@@ -144,6 +144,12 @@ function callSendApi(data) {
   });
 }
 
+Users.selectAllUsers((error, result) => {
+  if (error)
+    return console.log(error);
+    
+  console.log(result);
+})
 
 app.use(express.static(__dirname + '/public'));
 
