@@ -21,7 +21,7 @@ const Users = mongoose.model('users', UserSchema);
 
 class UserModel {
   constructor() {
-    console.log('new model instance created');
+    console.log('new model instance created', Users);
   }
   
   insert(data, callback) {

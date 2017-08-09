@@ -33,6 +33,7 @@ const expressions = {
   //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
   'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/)
 };
+
 const messages = {
   hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
   help: (message, id, callback) => {
