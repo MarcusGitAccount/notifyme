@@ -68,9 +68,6 @@ const messages = {
   livestream: (message, id, callback) => {
     const arr = message.split(' ');
 
-    console.log('LIVESTREAM', arr, JSON.stringify(Users, null, 2));
-
-    
     if (arr[2] === "0.00000000")
       return callback('Invalid value');
     
@@ -227,3 +224,5 @@ setInterval(() => {
       console.log(`Fetch error: ${error}`);
     });
 }, UPDATE_TIME);
+
+console.log('MONGO_URI', process.env.MONGOLAB_URI);
