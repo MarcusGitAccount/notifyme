@@ -63,14 +63,15 @@ const messages = {
     return 'Livestreaming currency has stopped';
   },
   livestream: (message, id) => {
-    console.log('LIVESTREAM');
-    
     const arr = message.split(' ');
+
+    console.log('LIVESTREAM', arr);
+
     
     if (parseFloat(arr[2]) === 0)
       return 'Invalid value';
     
-    Users.insert({
+    return Users.insert({
       user_id: id,
       last_text: message,
       last_livestream_value: parseFloat(arr[2]),
@@ -98,13 +99,13 @@ app.use(bodyParser.urlencoded({ 'extended': true}));
 app.use(bodyParser.json());
 
 function processMessage(event) {
-  console.log('tryng to get the message')
+  //console.log('tryng to get the message')
   
   sendMessage(event.sender.id, event.message.text);
 }
 
 function sendMessage(id, text) {
-  console.log(id, text, 'next help pls');
+  //console.log(id, text, 'next help pls');
   
   // logic
   Object.keys(expressions).forEach(regexpKey => {
@@ -139,7 +140,7 @@ function callSendApi(data) {
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (request, response) => {
-  console.log('here i lay in pure sadness')
+  //console.log('here i lay in pure sadness')
   response.status(200).send(JSON.stringify(currenciesRate, null, 2));
 });
 
@@ -156,9 +157,9 @@ app.get('/webhook', (request, response) => {
 app.post('/webhook', (request, response) => {
   console.log('posting');
   if (request.body.object === 'page') {
-    console.log(request.body.entry)
+    //console.log(request.body.entry)
     request.body.entry.forEach((entry) => {
-      console.log('message ', entry);
+      //console.log('message ', entry);
       entry.messaging.forEach((event) => {
         if (event.message) {
           processMessage(event);
