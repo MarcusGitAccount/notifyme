@@ -115,7 +115,7 @@ function sendMessage(id, text) {
   // logic
   Object.keys(expressions).forEach(regexpKey => {
     if (expressions[regexpKey].test(text, id)) {
-      messages[regexpKey](id, text, (message) => {
+      messages[regexpKey](text, id, (message) => {
          callSendApi({
           recipient: { id },
           message: { text: message }
