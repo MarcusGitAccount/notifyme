@@ -204,13 +204,6 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
     if (err)
       return console.log(err);
     
-    result.forEach(user => {
-      callSendApi({
-        recipient: { id: user.user_id },
-        message: { text: 'initial'}
-      });
-    });
-    
     console.log(result);
   });
 });
