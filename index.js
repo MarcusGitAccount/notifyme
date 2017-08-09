@@ -23,6 +23,7 @@ const UsersModel = require('./Users');
 const app = express();
 const Users = new UsersModel();
 
+console.log('model', UsersModel, Users)
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
@@ -61,9 +62,9 @@ const messages = {
         callback('Error while stopping the stream. Try another time please.');
         return;
       }
+      callback('Livestreaming currency has stopped');
     });
     
-    callback('Livestreaming currency has stopped');
   },
   livestream: (message, id, callback) => {
     const arr = message.split(' ');
