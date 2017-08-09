@@ -36,12 +36,12 @@ const Users = mongoose.model('users', UserSchema);
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup|hi)$/),
   'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
-  //'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
-  'currency': new RegExp(`^sc$`),
+  'currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
+  //'currency': new RegExp(`^sc$`),
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
-  //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
-  'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/)
+  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
+  //'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/)
 };
 
 const messages = {
@@ -103,7 +103,7 @@ const messages = {
         if (arr[2] === currenciesRate[arr[0]].last)
           return callback(`Starting stream... ${arr[0]} reached your desired value.`);
         
-        callback('Starting stream...');
+        callback('Starting stream... Previous stream will be stopped if one exists.');
       });
     });
     
