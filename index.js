@@ -101,7 +101,7 @@ const messages = {
         }
         
         if (arr[2] === currenciesRate[arr[0]].last)
-          return callback(`Starting stream... ${arr[0]} reached your desired value.`);
+          return callback(`Starting stream... ${arr[0]} reached your desired value. 😍😍😍😍😍`);
         
         callback('Starting stream... Previous stream will be stopped if one exists.');
       });
@@ -243,7 +243,7 @@ setInterval(() => {
                   
                   callSendApi({
                     recipient: { id: user.user_id },
-                    message: { text: `${user.currency} reached your desired value.` },
+                    message: { text: `${user.currency} reached your desired value. 😍😍😍😍😍😍` },
                     notification_type: 'SILENT_PUSH'
                   });
                 });
