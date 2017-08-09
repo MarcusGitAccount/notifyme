@@ -74,7 +74,7 @@ const messages = {
     if (parseFloat(arr[2]) === 0)
       return callback('Invalid value');
     
-    return Users.insert({
+    Users.insert({
       user_id: id,
       last_text: message,
       last_livestream_value: parseFloat(arr[2]),
