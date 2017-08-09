@@ -148,8 +148,8 @@ Users.selectAllUsers((error, result) => {
   if (error)
     return console.log(error);
     
-  console.log(result);
-})
+  console.log('Selecting all users': result);
+});
 
 app.use(express.static(__dirname + '/public'));
 
