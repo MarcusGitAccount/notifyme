@@ -29,6 +29,7 @@ class UserModel {
     
     console.log(data)
     user.save((err, result) => {
+      console.log(err, result)
       if (err) {
         callback(err); console.log(err)
         return ;
