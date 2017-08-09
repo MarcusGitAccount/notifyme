@@ -207,7 +207,7 @@ function callSendApi(data) {
   });
 }
 
-model.selectAllmodel((error, result) => {
+model.selectAllUsers((error, result) => {
   if (error)
     return console.log(error);
     
