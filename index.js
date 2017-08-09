@@ -82,7 +82,7 @@ const messages = {
     }, (error, result) => {
       if (error) {
         console.log(error);
-        return callback('Error while starting the stream. Try another time please.');
+        return callback('Error while starting the stream. Try another time please.' + error);
       }
       
       if (parseFloat(arr[2]) === currenciesRate[arr[0]].last)
@@ -122,6 +122,8 @@ function sendMessage(id, text) {
         });
       });
     }
+    
+    return ;
   });
 
   
