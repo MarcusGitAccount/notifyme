@@ -81,6 +81,8 @@ const messages = {
       last_livestream_value: arr[2],
       currency: arr[0]
     }, (error, result) => {
+      console.log('...', error, result)
+      
       console.log('so, uhm')
       if (error) {
         console.log(error);
@@ -98,8 +100,6 @@ const messages = {
     });
   }
 };
-
-
 
 app.set('port', (process.env.PORT || 5000));
 app.set('case sensitive routing', true);
@@ -154,7 +154,6 @@ Users.selectAllUsers((error, result) => {
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (request, response) => {
-  //console.log('here i lay in pure sadness')
   response.status(200).send(JSON.stringify(currenciesRate, null, 2));
 });
 
@@ -171,9 +170,7 @@ app.get('/webhook', (request, response) => {
 app.post('/webhook', (request, response) => {
   console.log('posting');
   if (request.body.object === 'page') {
-    //console.log(request.body.entry)
     request.body.entry.forEach((entry) => {
-      //console.log('message ', entry);
       entry.messaging.forEach((event) => {
         if (event.message) {
           processMessage(event);
