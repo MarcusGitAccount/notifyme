@@ -23,8 +23,6 @@ const UsersModel = require('./Users');
 const app = express();
 const Users = new UsersModel();
 
-console.log('model', UsersModel, Users)
-
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup)$/),
   'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
