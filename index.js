@@ -70,7 +70,7 @@ const messages = {
     d) stop/end/terminate to end currency livestream
     e) site - source of values
     f) current - get the value of current stream
-    g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_TIME.join(', ')}. 
+    g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_VALUES.join(', ')}. 
     h) alertcurrent
     i) alertstop `);
   },
