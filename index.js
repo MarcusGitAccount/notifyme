@@ -47,7 +47,7 @@ let updateInterval, alertInterval;
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup|hi)$/),
-  'help': new RegExp(/^(help|helping|help pls| help please|halp)$/),
+  'help': new RegExp(/^(help|helping|help pls|help please|halp)$/),
   //currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
   'currency': new RegExp(`^sc$`),
   'stop': new RegExp(/^stop|end|terminate$/),
@@ -160,7 +160,7 @@ const messages = {
         if (error)
           return callback(`Error while starting the alert system. ${error}`);
           
-        callback(`Alert started for ${arr[1]}. You will receive an alert every ${arr[2]} minutes starting at a fixed time. (min is multiple of 5). Previous alert will be removed.`);
+        callback(`Alert started for ${arr[1]}. You will receive an alert every ${arr[2]} minutes starting at a fixed time. (min is multiple of ${arr[2]}). Previous alert will be removed.`);
       });
     })
   },
