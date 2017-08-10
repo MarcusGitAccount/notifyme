@@ -334,10 +334,11 @@ setTimeout(() => {
   alertInterval = setInterval(() => {
     const minute = (new Date()).getMinutes();
     const arr = ALERT_VALUES.map((item) => {
-      if (minute % item === 0)
+      if (minute % item === 0 || minute === 0)
         return item;
     });
     
+    console.log(arr);
     
     Alerts.find({value: {$in: arr}}, (error, users) => {
       if (error)
