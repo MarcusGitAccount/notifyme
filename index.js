@@ -3,6 +3,8 @@
 // dbconnection_pass~eurobtc2017
 // marcuspop
 
+const ALERT_VALUES = [5, 10, 15, 20, 30];
+const ALERT_TIME = 5 * 60 * 1000;
 const UPDATE_TIME = 5 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
@@ -22,16 +24,26 @@ const req = require('request');
 const app = express();
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
+
+const AlertSchema = new Schema({
+  id: ObjectId,
+  user_id: {type: String, unique: true},
+  currency: {type: String, default: 'sc'},
+  value: {type: Number, default: 5}
+});
+
 const UserSchema = new Schema({
   id: ObjectId,
   user_id: {type: String, unique: true},
   currency: {type: String},
   last_text: {type: String, default: null},
-  last_livestream_value: {type: String, default: null}
+  last_livestream_value: {type: String, default: null},
 });
 
+const Alerts = mongoose.model('alerts', AlertSchema);
 const Users = mongoose.model('users', UserSchema);
 
+let updateInterval, alertInterval;
 
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup|hi)$/),
@@ -42,7 +54,10 @@ const expressions = {
   'site': new RegExp(/^site$/),
   //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
   'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/),
-  'current': new RegExp(/^current$/)
+  'current': new RegExp(/^current$/),
+  'alertstart': new RegExp(/^^alertstart [\w]{2,5} [\d]{1,2}$/),
+  'alertstop': new RegExp(/^alertstop$/),
+  'alertscurrent': new RegExp(/^alertcurrent$/)
 };
 
 const messages = {
@@ -54,7 +69,10 @@ const messages = {
     c) help
     d) stop/end/terminate to end currency livestream
     e) site - source of values
-    f) current - get the value of current stream`);
+    f) current - get the value of current stream
+    g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_TIME.join(', ')}. 
+    h) alertcurrent
+    i) alertstop `);
   },
   currency: (message, id, callback) => {
     console.log('CURRENCY');
@@ -118,6 +136,54 @@ const messages = {
       }
       
       callback(`You will receive a message when Siacoin will reach ${user.last_livestream_value} BTC.`);
+    });
+  },
+  alertstart: (message, id, callback) => {
+    const arr = message.split(' ').map(item => item.toLowerCase());
+    const _alert = new Alerts({
+      currency: arr[1],
+      value: parseInt(arr[2]),
+      user_id: id
+    });
+    
+    if (supportedCurrencies.indexOf(arr[1]) < 0)
+      return callback(`${arr[1]} is not curently supported.`);
+      
+    if (ALERT_VALUES.indexOf(parseInt(arr[2])) < 0)
+      return callback(`Period of time not supported. Consult the help command.`);
+    
+    Alerts.findOneAndRemove({user_id: id}, (error ) => {
+      if (error)
+        return console.log(error);
+        
+      _alert.save((error, result) => {
+        if (error)
+          return callback(`Error while starting the alert system. ${error}`);
+          
+        callback(`Alert started for ${arr[1]}. You will receive an alert every ${arr[2]} minutes starting at a fixed time. (min is multiple of 5). Previous alert will be removed.`);
+      });
+    })
+  },
+  alertscurrent: (message, id, callback) => {
+    Alerts.findOne({user_id: id}, (error, user) => {
+      if (error) {
+        console.log(error);
+        return callback('Something wrong happened');
+      }
+      
+      callback(`Alert info: 
+      a.) currency: ${user.currency}
+      b.) delay: ${user.value}`);
+    });
+  },
+  alertstop: (message, id, callback) => {
+    Alerts.findOneAndRemove({user_id: id}, (error) => {
+      if (error) {
+        callback('An error occurred while stopping the alert system. Try later.');
+        return console.log(error);
+      }
+      
+      callback('Alert stopped and deleted');
     });
   }
 };
@@ -219,7 +285,7 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
   });
 });
 
-setInterval(() => {
+updateInterval = setInterval(() => {
   console.log('tick');
   
   fetch(POLONIEX_URL_TICKER, {
@@ -259,4 +325,50 @@ setInterval(() => {
     })
     .catch(error => {
       console.log(`Fetch error: ${error}`);
-    });}, UPDATE_TIME);
+    });
+}, UPDATE_TIME);
+
+setTimeout(() => {
+  console.log(`Started interval at ${new Date()}`);
+  
+  alertInterval = setInterval(() => {
+    const minute = (new Date()).getMinutes();
+    const arr = ALERT_VALUES.map((item) => {
+      if (minute % item === 0)
+        return item;
+    });
+    
+    
+    Alerts.find({value: {$in: arr}}, (error, users) => {
+      if (error)
+        return console.log(error);
+      
+      users.forEach(user => {
+        let message = 'Currency update was not available.';
+        
+
+        if (currenciesRate && currenciesRate[user.currency]) {
+          message = `${user.value} min update: 1 ${user.currency} is worth ${currenciesRate[user.currency].last}`;
+          
+          callSendApi({
+            recipient: { id: user.user_id },
+            message: { text: message },
+            notification_type: 'NO_PUSH'
+          });
+        }
+      });
+    });
+    
+  }, ALERT_TIME);
+}, (function() {
+  const date = new Date();
+
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  if (minutes % 5 === 0)
+    return 0;
+
+  return ((4 - minutes % 5) * 60 + (60 - seconds)) * 1000;
+
+})());
