@@ -201,15 +201,13 @@ function processMessage(event) {
 function sendMessage(id, text) {
   Object.keys(expressions).forEach(regexpKey => {
     if (expressions[regexpKey].test(text.toLowerCase().trim())) {
-      messages[regexpKey](text, id, (message) => {
+      return messages[regexpKey](text, id, (message) => {
          callSendApi({
           recipient: { id },
           message: { text: message }
         });
       });
     }
-    
-    return ;
   });
 }
 
