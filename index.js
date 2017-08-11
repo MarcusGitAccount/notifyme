@@ -10,7 +10,7 @@ const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
 
-const supportedCurrencies = ['sc', 'eth', 'ltc'];
+const supportedCurrencies = ['sc'];
 const currenciesRate = {};
 
 const fetch = require('node-fetch');
@@ -48,44 +48,40 @@ let updateInterval, alertInterval;
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup|hi)$/),
   'help': new RegExp(/^(help|helping|help pls|help please|halp)$/),
-  'currency': new RegExp(`^price (${supportedCurrencies.join('|')})$`),
-  //'currency': new RegExp(`^sc$`),
+  //currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
+  'currency': new RegExp(`^sc$`),
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
-  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`),
-  //'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/),
+  //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
+  'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/),
   'current': new RegExp(/^current$/),
   'alertstart': new RegExp(/^^alertstart [\w]{2,5} [\d]{1,2}$/),
   'alertstop': new RegExp(/^alertstop$/),
-  'alertscurrent': new RegExp(/^alertcurrent$/),
-  'currencies': new RegExp(/^currencies$/)
-  
+  'alertscurrent': new RegExp(/^alertcurrent$/)
 };
 
 const messages = {
   hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
   help: (message, id, callback) => {
     callback( `Available commands: 
-    a) ${supportedCurrencies.join('/')} to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
-    b) price ${supportedCurrencies.join('/')} to get the currency value in BTC.
+    a) sc to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
+    b) ${supportedCurrencies.join('; ')} to get the currency value in BTC.
     c) help
     d) stop/end/terminate to end currency livestream
     e) site - source of values
     f) current - get the value of current stream
     g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_VALUES.join(', ')}. 
     h) alertcurrent
-    i) alertstop 
-    j) currencies`);
+    i) alertstop `);
   },
   currency: (message, id, callback) => {
     console.log('CURRENCY');
-    const currency = message.split(' ')[1].toLowerCase();
     
-    if (currenciesRate[currency] === {} || !currenciesRate[currency]) {
+    if (currenciesRate[message] === {} || !currenciesRate[message]) {
       callback(`Couldn't retrieve currency. Try later`);
       return ;
     }
-    callback(`1 ${message} is worth ${currenciesRate[currency].last} bitcoin`);
+    callback(`1 ${message} is worth ${currenciesRate[message].last} bitcoin`);
   },
   site: (message, id, callback) => callback('https://poloniex.com'),
   stop: (message, id, callback) => {
@@ -189,8 +185,7 @@ const messages = {
       
       callback('Alert stopped and deleted');
     });
-  },
-  currencies: (message, id, callback) => callback(`Supported currencies: ${supportedCurrencies.join('|')}`)
+  }
 };
 
 app.set('port', (process.env.PORT || 5000));
@@ -358,7 +353,7 @@ setTimeout(() => {
         
 
         if (currenciesRate && currenciesRate[user.currency]) {
-          message = `${user.value} min update: 1 ${user.currency} is worth ${currenciesRate[user.currency].last} BTC.`;
+          message = `${user.value} min update: 1 ${user.currency} is worth ${currenciesRate[user.currency].last}`;
           
           callSendApi({
             recipient: { id: user.user_id },
