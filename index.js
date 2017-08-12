@@ -10,7 +10,7 @@ const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
 
-const supportedCurrencies = ['sc'];
+const supportedCurrencies = ['sjcx'];
 const currenciesRate = {};
 
 const fetch = require('node-fetch');
@@ -49,11 +49,11 @@ const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup|hi)$/),
   'help': new RegExp(/^(help|helping|help pls|help please|halp)$/),
   //currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
-  'currency': new RegExp(`^sc$`),
+  'currency': new RegExp(`^sjcx`),
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
   //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
-  'livestream': new RegExp(/^sc to [\d]+\.[\d]{8}$/),
+  'livestream': new RegExp(/^sjcx to [\d]+\.[\d]{8}$/),
   'current': new RegExp(/^current$/),
   'alertstart': new RegExp(/^^alertstart [\w]{2,5} [\d]{1,2}$/),
   'alertstop': new RegExp(/^alertstop$/),
@@ -162,7 +162,7 @@ const messages = {
           
         callback(`Alert started for ${arr[1]}. You will receive an alert every ${arr[2]} minutes starting at a fixed time. (min is multiple of ${arr[2]}). Previous alert will be removed.`);
       });
-    })
+    });
   },
   alertscurrent: (message, id, callback) => {
     Alerts.findOne({user_id: id}, (error, user) => {
