@@ -65,7 +65,7 @@ const messages = {
   hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
   help: (message, id, callback) => {
     callback( `Available commands: 
-    a) ${supportedCurrencies.join('/')} to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
+    a) ${supportedCurrencies.join('/')} to <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
     b) price ${supportedCurrencies.join('/')} to get the currency value in BTC.
     c) help
     d) stop/end/terminate to end currency livestream
@@ -73,8 +73,8 @@ const messages = {
     f) current - get the value of current stream
     g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_VALUES.join(', ')}. 
     h) alertcurrent
-    i) alertstop ${supportedCurrencies.join('/')} - to stop alert system for one of your currencies.
-    j) supported - get the supported currencies`);
+    i) alertstop ${supportedCurrencies.join('/')} - for one of your currencies.
+    j) supported`);
   },
   currency: (message, id, callback) => {
     console.log('CURRENCY');
