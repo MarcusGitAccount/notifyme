@@ -210,7 +210,7 @@ function processMessage(event) {
 function sendMessage(id, text) {
   
   Object.keys(expressions).forEach(regexpKey => {
-    console.log(`key: ${regexpKey}, ${text}, ${expressions[regexpKey].text(text.toLowerCase().trim())}`);
+    console.log(`key: ${regexpKey}, ${text}, ${expressions[regexpKey].test(text.toLowerCase().trim())}`);
     
     if (expressions[regexpKey].test(text.toLowerCase().trim())) {
       return messages[regexpKey](text, id, (message) => {
