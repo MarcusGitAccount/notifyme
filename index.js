@@ -27,14 +27,14 @@ const ObjectId = Schema.ObjectId;
 
 const AlertSchema = new Schema({
   id: ObjectId,
-  user_id: {type: String, unique: true},
+  user_id: {type: String, unique: false},
   currency: {type: String, default: 'sc'},
   value: {type: Number, default: 5}
 });
 
 const UserSchema = new Schema({
   id: ObjectId,
-  user_id: {type: String, unique: true},
+  user_id: {type: String, unique: false},
   currency: {type: String},
   last_text: {type: String, default: null},
   last_livestream_value: {type: String, default: null},
@@ -52,12 +52,13 @@ const expressions = {
   //'currency': new RegExp(`^sjcx`),
   'stop': new RegExp(`/^(stop|end|terminate) (${supportedCurrencies.join('|')})$/`),
   'site': new RegExp(/^site$/),
-  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`),
+  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\\.[\d]{8}$`),
   //'livestream': new RegExp(/^sjcx to [\d]+\.[\d]{8}$/),
   'current': new RegExp(/^current$/),
   'alertstart': new RegExp(/^alertstart [\w]{2,5} [\d]{1,2}$/),
-  'alertstop': new RegExp(`/^alertstop ${supportedCurrencies.join('/')}$/`),
-  'alertscurrent': new RegExp(/^alertcurrent$/)
+  'alertstop': new RegExp(`/^alertstop (${supportedCurrencies.join('|')})$/`),
+  'alertscurrent': new RegExp(/^alertcurrent$/),
+  'supported': new RegExp(/^supported/)
 };
 
 const messages = {
@@ -194,7 +195,8 @@ const messages = {
       
       callback(`Alert stopped and deleted for ${currency.toUpperCase()}.`);
     });
-  }
+  },
+  supported: (message, id, callback) => callback(`Supported currencies: ${supportedCurrencies.join(', ')}`)
 };
 
 app.set('port', (process.env.PORT || 5000));
