@@ -68,7 +68,7 @@ const messages = {
     a) ${supportedCurrencies.join('/')} to <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
     b) price ${supportedCurrencies.join('/')} to get the currency value in BTC.
     c) help
-    d) stop/end/terminate to end currency livestream
+    d) stop/end/terminate <currency> to end currency livestream
     e) site - source of values
     f) current - get the value of current stream
     g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_VALUES.join(', ')}. 
