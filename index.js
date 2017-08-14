@@ -208,9 +208,10 @@ function processMessage(event) {
 }
 
 function sendMessage(id, text) {
-  console.log(text);
   
   Object.keys(expressions).forEach(regexpKey => {
+    console.log(`key: ${regexpKey}`);
+    
     if (expressions[regexpKey].test(text.toLowerCase().trim())) {
       return messages[regexpKey](text, id, (message) => {
          callSendApi({
