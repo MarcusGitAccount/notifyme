@@ -10,7 +10,7 @@ const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
 
-const supportedCurrencies = ['sjcx'];
+const supportedCurrencies = ['sjcx', 'clam', 'sc', 'eth'];
 const currenciesRate = {};
 
 const fetch = require('node-fetch');
@@ -48,15 +48,15 @@ let updateInterval, alertInterval;
 const expressions = {
   'hello': new RegExp(/^(hello|hei|hey|salut|greetings|sup|'sup|hi)$/),
   'help': new RegExp(/^(help|helping|help pls|help please|halp)$/),
-  //currency': new RegExp(`^${[supportedCurrencies.join('|'), supportedCurrencies.map(item => item.toUpperCase()).join('|')].join('|')}$`),
-  'currency': new RegExp(`^sjcx`),
+  'currency': new RegExp(`^price (${supportedCurrencies.join('|')})$`),
+  //'currency': new RegExp(`^sjcx`),
   'stop': new RegExp(/^stop|end|terminate$/),
   'site': new RegExp(/^site$/),
-  //'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`)
-  'livestream': new RegExp(/^sjcx to [\d]+\.[\d]{8}$/),
+  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`),
+  //'livestream': new RegExp(/^sjcx to [\d]+\.[\d]{8}$/),
   'current': new RegExp(/^current$/),
-  'alertstart': new RegExp(/^^alertstart [\w]{2,5} [\d]{1,2}$/),
-  'alertstop': new RegExp(/^alertstop$/),
+  'alertstart': new RegExp(/^alertstart [\w]{2,5} [\d]{1,2}$/),
+  'alertstop': new RegExp(`/^alertstop ${supportedCurrencies.join('/')}$/`),
   'alertscurrent': new RegExp(/^alertcurrent$/)
 };
 
@@ -64,24 +64,28 @@ const messages = {
   hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
   help: (message, id, callback) => {
     callback( `Available commands: 
-    a) sc to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
-    b) ${supportedCurrencies.join('; ')} to get the currency value in BTC.
+    a) ${supportedCurrencies.join('/')} to <value> to get notifications when Siacon reaches <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
+    b) price ${supportedCurrencies.join('/')} to get the currency value in BTC.
     c) help
     d) stop/end/terminate to end currency livestream
     e) site - source of values
     f) current - get the value of current stream
     g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_VALUES.join(', ')}. 
     h) alertcurrent
-    i) alertstop `);
+    i) alertstop ${supportedCurrencies.join('/')} - to stop alert system for one of your currencies.
+    j) supported - get the supported currencies`);
   },
   currency: (message, id, callback) => {
     console.log('CURRENCY');
     
-    if (currenciesRate[message] === {} || !currenciesRate[message]) {
+    const currency = message.split(' ')[1].toLocaleLowerCase();
+    
+    if (currenciesRate[currenciesRate] === {} || !currenciesRate[currency]) {
       callback(`Couldn't retrieve currency. Try later`);
       return ;
     }
-    callback(`1 ${message} is worth ${currenciesRate[message].last} bitcoin`);
+    
+    callback(`1 ${currency} is worth ${currenciesRate[currency].last} BTC.`);
   },
   site: (message, id, callback) => callback('https://poloniex.com'),
   stop: (message, id, callback) => {
@@ -109,7 +113,7 @@ const messages = {
     if (arr[2] === "0.00000000")
       return callback('Invalid value');
     
-    Users.findOneAndRemove({user_id: id}, (err) => {
+    Users.findOneAndRemove({user_id: id, currency: user.currency}, (err) => {
       if (err) {
         return console.log(err);
       }
@@ -121,7 +125,7 @@ const messages = {
         }
         
         
-        if (arr[2] === currenciesRate[arr[0]].last)
+        if (arr[2] === currenciesRate[arr[0].toLocaleLowerCase()].last)
           return callback(`Starting stream... ${arr[0]} reached your desired value. 😍😍😍😍😍`);
         
         callback('Starting stream... Previous stream will be stopped if one exists.');
@@ -135,11 +139,12 @@ const messages = {
         return callback('Something wrong happened');
       }
       
-      callback(`You will receive a message when Siacoin will reach ${user.last_livestream_value} BTC.`);
+      callback(`You will receive a message when ${user.currency.toUpperCase()} will reach ${user.last_livestream_value} BTC.`);
     });
   },
   alertstart: (message, id, callback) => {
     const arr = message.split(' ').map(item => item.toLowerCase());
+    
     const _alert = new Alerts({
       currency: arr[1],
       value: parseInt(arr[2]),
@@ -152,7 +157,7 @@ const messages = {
     if (ALERT_VALUES.indexOf(parseInt(arr[2])) < 0)
       return callback(`Period of time not supported. Consult the help command.`);
     
-    Alerts.findOneAndRemove({user_id: id}, (error ) => {
+    Alerts.findOneAndRemove({user_id: id, currency: _alert.currency}, (error ) => {
       if (error)
         return console.log(error);
         
@@ -165,25 +170,28 @@ const messages = {
     });
   },
   alertscurrent: (message, id, callback) => {
-    Alerts.findOne({user_id: id}, (error, user) => {
+    Alerts.find({user_id: id}, (error, alerts) => {
       if (error) {
         console.log(error);
         return callback('Something wrong happened');
       }
       
-      callback(`Alert info: 
-      a.) currency: ${user.currency}
-      b.) delay: ${user.value}`);
+      callback(`Alerts info\n:
+          ${alerts.reduce((prev, current) =>{
+          	return prev + `currency: ${current.currency}; delay: ${current.value}\n`;
+          }, '')}`);
     });
   },
   alertstop: (message, id, callback) => {
-    Alerts.findOneAndRemove({user_id: id}, (error) => {
+    const currency = message.split(' ')[1].toLocaleLowerCase();
+    
+    Alerts.findOneAndRemove({user_id: id, currency: currency}, (error) => {
       if (error) {
         callback('An error occurred while stopping the alert system. Try later.');
         return console.log(error);
       }
       
-      callback('Alert stopped and deleted');
+      callback(`Alert stopped and deleted for ${currency.toUpperCase()}.`);
     });
   }
 };
@@ -311,7 +319,7 @@ updateInterval = setInterval(() => {
                   
                   callSendApi({
                     recipient: { id: user.user_id },
-                    message: { text: `${user.currency} reached your desired value. 😍😍😍😍😍😍` },
+                    message: { text: `${user.currency} reached your desired value of ${user.last_livestream_value}. 😍😍😍😍😍😍` },
                     notification_type: 'SILENT_PUSH'
                   });
                 });
