@@ -135,13 +135,16 @@ const messages = {
     });
   },
   current: (message, id, callback) => { 
-    Users.findOne({user_id: id}, (error, user) => {
+    Users.find({user_id: id}, (error, users) => {
       if (error) {
         console.log(error);
         return callback('Something wrong happened');
       }
       
-      callback(`You will receive a message when ${user.currency.toUpperCase()} will reach ${user.last_livestream_value} BTC.`);
+      callback(users.reduce((prev, current) =>{
+      	return prev + `currency: ${currenciesRate.currency}; value: ${current.last_livestream_value}\n`;
+      }, ''));
+      
     });
   },
   alertstart: (message, id, callback) => {
@@ -178,10 +181,9 @@ const messages = {
         return callback('Something wrong happened');
       }
       
-      callback(`Alerts info\n:
-          ${alerts.reduce((prev, current) =>{
-          	return prev + `currency: ${current.currency}; delay: ${current.value}\n`;
-          }, '')}`);
+      callback(alerts.reduce((prev, current) =>{
+      	return prev + `currency: ${current.currency}; delay: ${current.value}\n`;
+      }, ''));
     });
   },
   alertstop: (message, id, callback) => {
@@ -241,7 +243,6 @@ function callSendApi(data) {
     }
   });
 }
-
 
 app.use(express.static(__dirname + '/public'));
 
