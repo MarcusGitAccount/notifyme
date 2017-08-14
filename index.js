@@ -142,7 +142,7 @@ const messages = {
       }
       
       callback(users.reduce((prev, current) =>{
-      	return prev + `currency: ${currenciesRate.currency}; value: ${current.last_livestream_value}\n`;
+      	return prev + `currency: ${current.currency}; value: ${current.last_livestream_value}\n`;
       }, ''));
       
     });
@@ -229,6 +229,8 @@ function sendMessage(id, text) {
 }
 
 function callSendApi(data) {
+  console.log(data);
+  
   req({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
     qs: {access_token: PAGE_TOKEN},
