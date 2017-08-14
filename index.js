@@ -91,12 +91,14 @@ const messages = {
   },
   site: (message, id, callback) => callback('https://poloniex.com'),
   stop: (message, id, callback) => {
-    Users.findOneAndRemove({user_id: id}, (err) => {
+    const currency = message.split(' ')[1].toLocaleLowerCase();
+    
+    Users.findOneAndRemove({user_id: id, currency: currency}, (err) => {
       if (err) {
         callback('Error while stopping the stream. Try another time please.');
         return console.log(err);
       }
-      callback('Livestreaming currency has stopped');
+      callback(`Livestreaming currency has stopped for ${currency.toUpperCase()}`);
       
     });
     
