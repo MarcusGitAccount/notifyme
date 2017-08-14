@@ -50,7 +50,7 @@ const expressions = {
   'help': new RegExp(/^(help|helping|help pls|help please|halp)$/),
   'currency': new RegExp(`^price (${supportedCurrencies.join('|')})$`),
   //'currency': new RegExp(`^sjcx`),
-  'stop': new RegExp(/^stop|end|terminate$/),
+  'stop': new RegExp(`/^(stop|end|terminate) (${supportedCurrencies.join('|')})$/`),
   'site': new RegExp(/^site$/),
   'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\.[\d]{8}$`),
   //'livestream': new RegExp(/^sjcx to [\d]+\.[\d]{8}$/),
@@ -79,6 +79,7 @@ const messages = {
     console.log('CURRENCY');
     
     const currency = message.split(' ')[1].toLocaleLowerCase();
+    
     
     if (currenciesRate[currenciesRate] === {} || !currenciesRate[currency]) {
       callback(`Couldn't retrieve currency. Try later`);
@@ -207,6 +208,8 @@ function processMessage(event) {
 }
 
 function sendMessage(id, text) {
+  console.log(text);
+  
   Object.keys(expressions).forEach(regexpKey => {
     if (expressions[regexpKey].test(text.toLowerCase().trim())) {
       return messages[regexpKey](text, id, (message) => {
