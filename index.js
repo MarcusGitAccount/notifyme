@@ -3,7 +3,7 @@
 // dbconnection_pass~eurobtc2017
 // marcuspop
 
-const ALERT_VALUES = [5, 10, 15, 20, 30];
+const ALERT_VALUES = [1, 2, 5, 10, 15, 20, 30];
 const ALERT_TIME = 5 * 60 * 1000;
 const UPDATE_TIME = 5 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
@@ -216,7 +216,7 @@ function sendMessage(id, text) {
     
     if (expressions[regexpKey].test(text.toLowerCase().trim())) {
       return messages[regexpKey](text, id, (message) => {
-        console.log(message)
+        console.log(message);
          callSendApi({
           recipient: { id },
           message: { text: message }
@@ -299,8 +299,6 @@ mongoose.connect(process.env.MONGODB_URI, (err, res) => {
 });
 
 updateInterval = setInterval(() => {
-  console.log('tick');
-  
   fetch(POLONIEX_URL_TICKER, {
     method: 'GET',
     headers: {'Content-Type': 'application/json'},
