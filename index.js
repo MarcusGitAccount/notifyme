@@ -50,13 +50,13 @@ const expressions = {
   'help': new RegExp(/^(help|helping|help pls|help please|halp)$/),
   'currency': new RegExp(`^price (${supportedCurrencies.join('|')})$`),
   //'currency': new RegExp(`^sjcx`),
-  'stop': new RegExp(`/^(stop|end|terminate) (${supportedCurrencies.join('|')})$/`),
+  'stop': new RegExp(`^(stop|end|terminate) (${supportedCurrencies.join('|')})$`),
   'site': new RegExp(/^site$/),
-  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\d]+\\.[\d]{8}$`),
+  'livestream': new RegExp(`^(${supportedCurrencies.join('|')}) to [\\d]+\\.[\\d]{8}$`),
   //'livestream': new RegExp(/^sjcx to [\d]+\.[\d]{8}$/),
   'current': new RegExp(/^current$/),
   'alertstart': new RegExp(/^alertstart [\w]{2,5} [\d]{1,2}$/),
-  'alertstop': new RegExp(`/^alertstop (${supportedCurrencies.join('|')})$/`),
+  'alertstop': new RegExp(`^alertstop (${supportedCurrencies.join('|')})$`),
   'alertscurrent': new RegExp(/^alertcurrent$/),
   'supported': new RegExp(/^supported/)
 };
@@ -216,6 +216,7 @@ function sendMessage(id, text) {
     
     if (expressions[regexpKey].test(text.toLowerCase().trim())) {
       return messages[regexpKey](text, id, (message) => {
+        console.log(message)
          callSendApi({
           recipient: { id },
           message: { text: message }
