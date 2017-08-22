@@ -10,7 +10,7 @@ const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
 const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
 const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
 
-const supportedCurrencies = ['sjcx', 'clam', 'sc', 'eth'];
+const supportedCurrencies = ['sjcx', 'clam', 'sc', 'eth', 'xrp'];
 const currenciesRate = {};
 
 const fetch = require('node-fetch');
@@ -143,6 +143,9 @@ const messages = {
         return callback('Something wrong happened');
       }
       
+      if (!users || users.length === 0)
+        return callback('You have no currency livestreams.');
+      
       callback(users.reduce((prev, current) =>{
       	return prev + `currency: ${current.currency}; value: ${current.last_livestream_value}\n`;
       }, ''));
@@ -182,6 +185,9 @@ const messages = {
         console.log(error);
         return callback('Something wrong happened');
       }
+      
+      if (!alerts || alerts.length === 0)
+        return callback('You have no alerts');
       
       callback(alerts.reduce((prev, current) =>{
       	return prev + `currency: ${current.currency}; delay: ${current.value}\n`;
