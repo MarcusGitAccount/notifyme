@@ -4,11 +4,11 @@
 // marcuspop
 
 const ALERT_VALUES = [1, 2, 5, 10, 15, 20, 30];
-const ALERT_TIME = 5 * 60 * 1000;
+const ALERT_TIME = 1 * 60 * 1000;
 const UPDATE_TIME = 5 * 1000;
 const POLONIEX_URL_TICKER = 'https://poloniex.com/public?command=returnTicker';
-const VERIFY_TOKEN = 'what_code_do_i_need_afterall_oh_my_verify_me_please';
-const PAGE_TOKEN = 'EAAaezGvfcCwBAKxugZCpzz2zjd6bnA2DGUXGZAfX6ZBF1zr2Swd4urTMjbAweUtJHRj0Vy3zXz5AdnPAS8dR1U66Gx21bJuYI9kO7mXVhIMyykXRiodxRj4KhZAZBjooTFD25utXYgNsEEwSKjUavNFFtvW09fOVPYqVTG9xmWAZDZD';
+const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+const PAGE_TOKEN = process.env.PAGE_TOKEN;
 
 const supportedCurrencies = ['sjcx', 'clam', 'sc', 'eth', 'xrp'];
 const currenciesRate = {};
