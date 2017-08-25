@@ -1,8 +1,5 @@
 'use strict';
 
-// dbconnection_pass~eurobtc2017
-// marcuspop
-
 const ALERT_VALUES = [1, 2, 5, 10, 15, 20, 30];
 const ALERT_TIME = 1 * 60 * 1000;
 const UPDATE_TIME = 5 * 1000;
