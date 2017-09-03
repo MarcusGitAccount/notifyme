@@ -62,15 +62,15 @@ const messages = {
   hello: (message, id, callback) => callback('Greetings to you. For a list of available commands please type help. Thank you.'),
   help: (message, id, callback) => {
     callback( `Available commands: 
-    a) ${supportedCurrencies.join('/')} to <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
-    b) price ${supportedCurrencies.join('/')} to get the currency value in BTC.
+    a) <currency> to <value>. 10 seconds continuous stream. Value format: 8 decimals number. Example: 'sc to 0.00000277'
+    b) price <currency> to get the currency value in BTC.
     c) help
     d) stop/end/terminate <currency> to end currency livestream
     e) site - source of values
     f) current - get the value of current stream
     g) alertstart <currency> <time>. Available currencies: ${supportedCurrencies.join(',')}. Available periods of time: ${ALERT_VALUES.join(', ')}. 
     h) alertcurrent
-    i) alertstop ${supportedCurrencies.join('/')} - for one of your currencies.
+    i) alertstop <currency> - for one of your currencies.
     j) supported`);
   },
   currency: (message, id, callback) => {
@@ -269,6 +269,7 @@ app.get('/webhook', (request, response) => {
 // receive message
 app.post('/webhook', (request, response) => {
   console.log('posting');
+  
   if (request.body.object === 'page') {
     request.body.entry.forEach((entry) => {
       entry.messaging.forEach((event) => {
